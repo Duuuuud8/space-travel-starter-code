@@ -1,36 +1,62 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SpaceTravelApi from "../services/SpaceTravelApi";
+import Button from "../Components/Button";
 // --------------------------------------------------------------------------------
 const CreateSpacecraftPage = () => {
   const navigate = useNavigate();
 
-  const [name, setName] = useState("");;
-  const [capacity, setCapacity] = useState("");
-  const [description, setDescription] = useState("");
+  // const [name, setName] = useState("");;
+  // const [capacity, setCapacity] = useState("");
+  // const [description, setDescription] = useState(""); clunky way
+  const [formData, setFormData] = useState({
+    name: "",
+    capacity: "",
+    description: "",
+  });
 
   const [error, setError] = useState("");
 // ------------------------------------------
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleChange = (e) => {
+    const {name, value} = e.target;
 
-    if (!name || !capacity || !description) {
-      setError("*Required - All fields must be filled out.*");
+    if (name === "capacity" && Number(value) < 1) {
       return;
     }
 
-    const response = await SpaceTravelApi.buildSpacecraft({
-      name,
-      capacity: Number(capacity),
-      description,
-    });
-
-    if (!response.isError) {
-      navigate("/spacecrafts"); // sends us back to the list
-    } else {
-      setError("Error creating spacecraft.");
-    }
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
+
+// ------------------------------------------
+
+  const handleSubmit = async (e) => {
+      e.preventDefault();
+
+      if (!formData.name || !formData.capacity || !formData.description) {
+        setError("*Required - All fields must be filled out.*");
+        return;
+      }
+
+      if (Number(formData.capacity) < 1) {
+        setError("Capacity cannot be negative");
+        return;
+      }
+
+      const response = await SpaceTravelApi.buildSpacecraft({
+        ...formData,
+        capacity: Number(formData.capacity),
+      });
+
+      if (!response.isError) {
+        navigate("/spacecrafts"); // sends us back to the list
+      } else {
+        setError("Error creating spacecraft.");
+        console.error(response.data);
+      }
+    };
 // --------------------------------------------------------------------------------
 
 
@@ -44,9 +70,9 @@ const CreateSpacecraftPage = () => {
             <div>
               <label>Name: </label>
               <input 
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
               />
             </div>
 
@@ -54,22 +80,26 @@ const CreateSpacecraftPage = () => {
             <div>
               <label>Capacity</label>
               <input 
+                name="capacity"
                 type="number"
-                value={capacity}
-                onChange={(e) => setCapacity(e.target.value)}
+                min="1"
+                value={formData.capacity}
+                onChange={handleChange}
               />
             </div>
 
             <div>
               <label>Description</label>
-              <input 
-                type="text"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
+              <textarea
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
               />
             </div>
 
-            <button type="submit">Submit</button>
+            <Button type="submit">
+              Create Ship
+            </Button>
       </form>
     </div>
   );

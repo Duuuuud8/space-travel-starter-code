@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import SpaceTravelApi from '../services/SpaceTravelApi';
-import { Link } from "react-router-dom";
 import Loading from "../Components/Loading";
+import Card from "../Components/Card";
 // --------------------------------------------------------------------------------
 const SpacecraftsPage = () => {
   const [spacecrafts, setSpacecrafts] = useState([]);
@@ -54,24 +54,11 @@ const SpacecraftsPage = () => {
         <p>No spacecraft available.</p>
       ) : (
         spacecrafts.map((craft) => (
-          <div key={craft.id}
-               style={{
-                border: "1px solid gray",
-                padding: "10px",
-                margin: "15px"
-               }}
-          >
-            <Link to={`/spacecrafts/${craft.id}`}>
-              <h3>{craft.name}</h3>
-            </Link>
-
-            <p>Capacity: {craft.capacity}</p>
-            <p>{craft.description.substring(0, 75)}</p>
-
-            <button onClick={() => handleDelete(craft.id)}>
-              Delete
-            </button>
-          </div>
+            <Card 
+              key={craft.id}
+              craft={craft}
+              onDelete={handleDelete}
+            />
         ))
       )}
     </div>
