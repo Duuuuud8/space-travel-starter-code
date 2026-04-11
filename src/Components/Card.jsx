@@ -1,5 +1,13 @@
 import Button from "./Button";
 import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
+
+Card.propTypes = {
+  craft: PropTypes.object.isRequired,
+  onDelete: PropTypes.func.isRequired,
+};  
+
+
 const Card = ({ craft, onDelete }) => {
   return (
     <div className="card">
