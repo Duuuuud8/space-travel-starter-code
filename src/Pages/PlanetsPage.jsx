@@ -9,19 +9,24 @@ const PlanetsPage = () => {
   const [spacecrafts, setSpacecrafts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedTargets, setSelectedTargets] = useState({});
+  const [error, setError] = useState("")
 
   // --------------------------Fetch the Data ----------------------------------------------------------
 
   useEffect(() => {
     async function fetchData() {
+      try{
       const planetsResponse = await SpaceTravelApi.getPlanets();
       const spacecraftsResponse = await SpaceTravelApi.getSpacecrafts();
 
       if (!planetsResponse.isError) setPlanets(planetsResponse.data);
       if (!spacecraftsResponse.isError) setSpacecrafts(spacecraftsResponse.data);
-
+      } catch (err) {
+        setError("Error fetching data")
+        console.error(err)
+      } finally {
       setLoading(false);
-    }
+    }}
 
     fetchData();
   }, []);
@@ -29,8 +34,12 @@ const PlanetsPage = () => {
   if(loading) {
     return <Loading />;
   }
+
+  if(error) return <h2>{error}</h2>
+
 // ----------------------------------Send Spacecraft-----------------------------
   const handleSend = async (spacecraftId, targetPlanetId) => {
+    try{
     const response = await SpaceTravelApi.sendSpacecraftToPlanet({
       spacecraftId,
       targetPlanetId,
@@ -46,13 +55,22 @@ const PlanetsPage = () => {
       setSelectedTargets({});
     } else {
       alert(response.data.message || "Error sending spacecraft");
+    } 
+    }catch (err) {
+      setError("Error sending spacecraft, retry")
+      console.error(err)
     }
   };
+
+
 
 // --------------------------UI--------------------------------------------------
 
   return (
     <div>
+
+      {error && <p style={{ color: "red" }}>{error}</p>};
+
       <h2>Planets</h2>
 
       {planets.map((planet) => (

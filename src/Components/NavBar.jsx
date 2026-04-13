@@ -1,9 +1,6 @@
 import { Link } from "react-router-dom";
-import PropTypes from "prop-types";
-
-const NavBar = () => {
-  NavBar.propTypes = {};
-  
+// this component recieves no props, so no propTypes necessary
+const NavBar = () => {  
   return (
     <nav style={{
            display: "flex",

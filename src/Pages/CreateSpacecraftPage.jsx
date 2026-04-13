@@ -15,14 +15,14 @@ const CreateSpacecraftPage = () => {
     description: "",
   });
 
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState([]);
 // ------------------------------------------
   const handleChange = (e) => {
     const {name, value} = e.target;
 
-    if (name === "capacity" && Number(value) < 1) {
-      return;
-    }
+    // if (name === "capacity" && Number(value) < 1) {
+    //   return;
+    // } commented out for testing purposes
 
     setFormData((prev) => ({
       ...prev,
@@ -35,20 +35,28 @@ const CreateSpacecraftPage = () => {
   const handleSubmit = async (e) => {
       e.preventDefault();
 
+      const newErrors = [];
+
       if (!formData.name || !formData.capacity || !formData.description) {
-        setError("*Required - All fields must be filled out.*");
-        return;
+        newErrors.push("*Required - All fields must be filled out.*");
       }
 
       if (Number(formData.capacity) < 1) {
-        setError("Capacity cannot be negative");
+        newErrors.push("Capacity cannot be negative");
+      }
+
+      if (newErrors.length > 0) {
+        setErrors(newErrors);
         return;
       }
 
+      try{
       const response = await SpaceTravelApi.buildSpacecraft({
         ...formData,
         capacity: Number(formData.capacity),
-      });
+      });} catch (err){
+        setErrors("Failed to create spacecraft, try again.");
+      }
 
       if (!response.isError) {
         navigate("/spacecrafts"); // sends us back to the list
@@ -64,7 +72,13 @@ const CreateSpacecraftPage = () => {
     <div>
       <h2>Build Your Spacecraft!</h2>
 
-      {error && <p style={{ color: "red" }}>{ error }</p>}
+      {errors.map((err, i) => (
+        <p  key={i}
+            style={{ color: "red" }}
+        >
+          { err }
+        </p>
+      ))}
 
       <form onSubmit={handleSubmit}>
             <div>

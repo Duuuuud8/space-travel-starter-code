@@ -11,6 +11,7 @@ const SpacecraftsPage = () => {
 
   useEffect(() => {
 
+    try{
     async function fetchSpacecrafts() {
       const response = await SpaceTravelApi.getSpacecrafts();
 
@@ -21,6 +22,8 @@ const SpacecraftsPage = () => {
       }
 
       setLoading(false);
+    }} catch (err){
+      setErrors("Something went wrong loading the data.");
     }
 
 
@@ -32,8 +35,12 @@ const SpacecraftsPage = () => {
   if(loading) {
     return <Loading />;
   }
+
+  if(error) return <h2>{error}</h2>
+
 // --------------------------------------------------------------------------------
 
+  try{
   const handleDelete = async (id) => {
     const response = await SpaceTravelApi.destroySpacecraftById({ id });
 
@@ -42,7 +49,9 @@ const SpacecraftsPage = () => {
     } else {
       console.error("Error deleting the spacecraft:", response.data);
     }
-  };
+  };} catch(err){
+    setErrors("Trouble deleting the spacecraft")
+  }
   
 
   

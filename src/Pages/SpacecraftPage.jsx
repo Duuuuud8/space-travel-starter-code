@@ -10,25 +10,37 @@ const SpacecraftPage = () => {
 
   const [spacecraft, setSpacecraft] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+
 
   useEffect(() => {
     async function fetchSpacecraft() {
+      try{
       const response = await SpaceTravelApi.getSpacecraftById({ id });
 
       if(!response.isError) {
         setSpacecraft(response.data);
       } else {
-        console.error("Error fetching spacecraft:", response.data);
-      }
-
+        setError("Error fetching spacecraft:");
+        console.error(response.data);
+      }} catch(err){
+        setError("Error fetching spacecraft:")
+        console.error(err)
+      } finally {
       setLoading(false);
+      }
     }
     
     fetchSpacecraft();
   }, [id]);
 
-    if (loading) {
+    if(loading) {
       return <Loading />;
+    }
+
+    if (error) {
+      return <h2>{error}</h2>
     }
 
     if (!spacecraft) {
