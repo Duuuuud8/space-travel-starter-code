@@ -30,12 +30,12 @@ const PlanetsPage = () => {
 
     fetchData();
   }, []);
-// ------------------------------------Loading----------------------------
+// ------------------------------------Loading/Error----------------------------
   if(loading) {
     return <Loading />;
   }
 
-  if(error) return <h2>{error}</h2>
+  if(error) return <h2 style={{ color: "red" }}>{error}</h2>;
 
 // ----------------------------------Send Spacecraft-----------------------------
   const handleSend = async (spacecraftId, targetPlanetId) => {
@@ -68,9 +68,6 @@ const PlanetsPage = () => {
 
   return (
     <div>
-
-      {error && <p style={{ color: "red" }}>{error}</p>};
-
       <h2>Planets</h2>
 
       {planets.map((planet) => (

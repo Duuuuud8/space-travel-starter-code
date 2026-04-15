@@ -54,15 +54,17 @@ const CreateSpacecraftPage = () => {
       const response = await SpaceTravelApi.buildSpacecraft({
         ...formData,
         capacity: Number(formData.capacity),
-      });} catch (err){
-        setErrors("Failed to create spacecraft, try again.");
-      }
+      });
 
       if (!response.isError) {
         navigate("/spacecrafts"); // sends us back to the list
       } else {
-        setError("Error creating spacecraft.");
+        setErrors("Error creating spacecraft.");
         console.error(response.data);
+      }
+      } catch (err){
+        setErrors(["Failed to create spacecraft, try again."]);
+        console.error(err);
       }
     };
 // --------------------------------------------------------------------------------

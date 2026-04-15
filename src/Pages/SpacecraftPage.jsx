@@ -12,7 +12,7 @@ const SpacecraftPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-
+// ----------------------Fetching Data----------------------------
 
   useEffect(() => {
     async function fetchSpacecraft() {
@@ -22,10 +22,11 @@ const SpacecraftPage = () => {
       if(!response.isError) {
         setSpacecraft(response.data);
       } else {
-        setError("Error fetching spacecraft:");
-        console.error(response.data);
-      }} catch(err){
-        setError("Error fetching spacecraft:")
+        setError("Error fetching spacecraft.");
+        console.error("API Error:", response.data);
+      }
+      } catch(err){
+        setError("Error fetching spacecraft.")
         console.error(err)
       } finally {
       setLoading(false);
@@ -40,7 +41,7 @@ const SpacecraftPage = () => {
     }
 
     if (error) {
-      return <h2>{error}</h2>
+      return <h2 style={{ color: "red" }}>{error}</h2>;
     }
 
     if (!spacecraft) {
